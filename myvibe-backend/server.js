@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables first
+require('dotenv').config(); // Load environment variables
 
 const express = require('express');
 const path = require('path');
@@ -16,7 +16,12 @@ connectDB().catch((err) => {
 });
 
 // Middleware
-app.use(cors()); // Configure CORS if necessary
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || '*', // Set this to your client's URL for production
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+app.use(cors(corsOptions)); // Configure CORS with options
 app.use(express.json()); // For parsing JSON requests
 
 // Serve static files (React app build)
@@ -55,7 +60,7 @@ const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*", // Allow any origin. Adjust this for production for security.
+    origin: process.env.CLIENT_ORIGIN || '*', // Set this to your client's URL for production
     methods: ["GET", "POST"]
   }
 });
