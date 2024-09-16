@@ -13,7 +13,7 @@ const Login = () => {
         try {
             console.log('Submitting login:', { email, password });
 
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch('http://3.239.96.231:5000/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
