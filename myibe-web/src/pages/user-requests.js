@@ -1,3 +1,4 @@
+// src/UserRequests.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Alert, Button } from 'react-bootstrap';
@@ -5,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Import BASE_URL from config
 
 const UserRequests = () => {
   const [musics, setMusics] = useState([]);
@@ -22,7 +24,7 @@ const UserRequests = () => {
   const fetchQueueMusics = async () => {
     try {
       if (userId) {
-        const response = await axios.get('http://localhost:5000/api/playlist/queue-songs-requests', {
+        const response = await axios.get(`${BASE_URL}/api/playlist/queue-songs-requests`, {
           params: { userId },
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
@@ -32,8 +34,8 @@ const UserRequests = () => {
         toast.error('No userId found in URL.');
       }
     } catch (error) {
-    //   console.error('Error fetching queue music:', error);
-    //   toast.error('Error fetching queue music. Please try again.');
+      console.error('Error fetching queue music:', error);
+      toast.error('Error fetching queue music. Please try again.');
     }
   };
 
@@ -45,7 +47,7 @@ const UserRequests = () => {
   const updateSongStatus = async (songId) => {
     try {
       const response = await axios.put(
-        'http://localhost:5000/api/playlist/update-song-status',
+        `${BASE_URL}/api/playlist/update-song-status`,
         { songId },
         { headers: { 'x-auth-token': localStorage.getItem('token') } }
       );
@@ -70,7 +72,7 @@ const UserRequests = () => {
     <div className='admin-dashboard'>
       <main className="content">
         <div className='container mt-5'>
-          <h1 className="mb-4">Songs on user requests</h1>
+          <h1 className="mb-4">Songs on User Requests</h1>
           <Table striped bordered hover responsive>
             <thead>
               <tr>
@@ -95,7 +97,7 @@ const UserRequests = () => {
                     <td>
                       <audio controls>
                         <source 
-                          src={`http://localhost:5000/${music.song}`} 
+                          src={`${BASE_URL}/${music.song}`} 
                           type="audio/mpeg"
                           onError={() => toast.error('Error loading audio file.')}
                         />
@@ -108,7 +110,7 @@ const UserRequests = () => {
                         className="ms-2"
                         onClick={() => updateSongStatus(music._id)} // Call handler with song ID
                       >
-                        Update queue
+                        Update Queue
                       </Button>
                     </td>
                   </tr>

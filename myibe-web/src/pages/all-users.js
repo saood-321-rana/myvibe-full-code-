@@ -1,9 +1,11 @@
+// src/AllUsers.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Import the BASE_URL
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -11,7 +13,7 @@ const AllUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/auth/users', {
+        const response = await axios.get(`${BASE_URL}/api/auth/users`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setUsers(response.data);
@@ -27,7 +29,7 @@ const AllUsers = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/auth/users/${id}`, {
+        await axios.delete(`${BASE_URL}/api/auth/users/${id}`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setUsers(users.filter(user => user._id !== id));

@@ -1,3 +1,4 @@
+// src/PlaylistSongs.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom'; // To extract playlist ID from the URL
@@ -5,6 +6,7 @@ import { Button, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Import BASE_URL from config
 
 const PlaylistSongs = () => {
   const [musics, setMusics] = useState([]);
@@ -22,7 +24,7 @@ const PlaylistSongs = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/playlist/playlist-songs/${playlistId}`, {
+        const response = await axios.get(`${BASE_URL}/api/playlist/playlist-songs/${playlistId}`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         console.log('Fetched musics:', response.data); // Debug line
@@ -39,7 +41,7 @@ const PlaylistSongs = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this music?')) {
       try {
-        await axios.delete('http://localhost:5000/api/playlist-songs/delete-song-from-playlist', {
+        await axios.delete(`${BASE_URL}/api/playlist-songs/delete-song-from-playlist`, {
           headers: { 'x-auth-token': localStorage.getItem('token') },
           data: { // This is where you send the body data
             songId: id,
@@ -54,7 +56,6 @@ const PlaylistSongs = () => {
       }
     }
   };
-  
 
   return (
     <div className='admin-dashboard'>
@@ -80,7 +81,7 @@ const PlaylistSongs = () => {
                   <td>
                     <audio controls>
                       <source 
-                        src={`http://localhost:5000/${music.song}`} 
+                        src={`${BASE_URL}/${music.song}`} 
                         type="audio/mpeg"
                         onError={() => toast.error('Error loading audio file.')}
                       />

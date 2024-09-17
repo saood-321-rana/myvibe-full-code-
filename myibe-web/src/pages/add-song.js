@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import BASE_URL from './config'; // Adjust the path as needed
 
 const AddSong = () => {
   const [formData, setFormData] = useState({
@@ -16,12 +17,12 @@ const AddSong = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const songsResponse = await axios.get('http://localhost:5000/api/music', {
+        const songsResponse = await axios.get(`${BASE_URL}/api/music`, {
           headers: { 'x-auth-token': token },
         });
         setSongs(songsResponse.data);
 
-        const playlistsResponse = await axios.get('http://localhost:5000/api/playlists/user', {
+        const playlistsResponse = await axios.get(`${BASE_URL}/api/playlists/user`, {
           headers: { 'x-auth-token': token },
         });
         setPlaylists(playlistsResponse.data);
@@ -55,7 +56,7 @@ const AddSong = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.post('http://localhost:5000/api/playlist-songs/add-song-to-playlist', {
+      const response = await axios.post(`${BASE_URL}/api/playlist-songs/add-song-to-playlist`, {
         songId,
         playlistId,
       }, {

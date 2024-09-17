@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom'; // To access URL params
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Adjust the path as needed
 
 const AllSongs = () => {
   const [musics, setMusics] = useState([]);
@@ -22,7 +23,7 @@ const AllSongs = () => {
         const userId = getUserIdFromURL(); // Get userId from URL
 
         if (userId) {
-          const response = await axios.get(`http://localhost:5000/api/playlist/user-songs?userId=${userId}`, {
+          const response = await axios.get(`${BASE_URL}/api/playlist/user-songs?userId=${userId}`, {
             headers: { 'x-auth-token': localStorage.getItem('token') }
           });
 
@@ -72,7 +73,7 @@ const AllSongs = () => {
                     <td>
                       <audio controls>
                         <source 
-                          src={`http://localhost:5000/${music.song}`} 
+                          src={`${BASE_URL}/${music.song}`} 
                           type="audio/mpeg"
                           onError={() => toast.error('Error loading audio file.')}
                         />

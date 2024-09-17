@@ -1,21 +1,21 @@
+// src/AllTimeSlots.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Import the BASE_URL
 
 const AllTimeSlots = () => {
   const [timeSlots, setTimeSlots] = useState([]);
   const [editing, setEditing] = useState(null);
   const [editData, setEditData] = useState({ length: '', price: '' });
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTimeSlots = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/timeslots', {
+        const response = await axios.get(`${BASE_URL}/api/timeslots`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setTimeSlots(response.data);
@@ -28,11 +28,10 @@ const AllTimeSlots = () => {
     fetchTimeSlots();
   }, []);
   
-
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this time slot?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/timeslots/${id}`, {
+        await axios.delete(`${BASE_URL}/api/timeslots/${id}`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setTimeSlots(timeSlots.filter(slot => slot._id !== id));
@@ -49,7 +48,7 @@ const AllTimeSlots = () => {
     
     try {
       // Match property names with backend
-      const response = await axios.put(`http://localhost:5000/api/timeslots/${id}`, {
+      const response = await axios.put(`${BASE_URL}/api/timeslots/${id}`, {
         timeSlotLength: editData.length,
         price: editData.price
       }, {
@@ -66,8 +65,6 @@ const AllTimeSlots = () => {
     }
   };
      
-  
-
   return (
     <div className='admin-dashboard'>
       <main className="content">
@@ -87,9 +84,9 @@ const AllTimeSlots = () => {
               {timeSlots.map((slot, index) => (
                 <tr key={slot._id}>
                   <td>{index + 1}</td>
-                  <td>{slot.timeSlotLength}</td> {/* Corrected property name */}
+                  <td>{slot.timeSlotLength}</td>
                   <td>{slot.price}€</td>
-                  <td>{new Date(slot.createdAt).toLocaleDateString()}</td> {/* Corrected date field */}
+                  <td>{new Date(slot.createdAt).toLocaleDateString()}</td>
                   <td>
                     <Button 
                       variant="warning" 

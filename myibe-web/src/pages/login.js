@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import BASE_URL from './config'; // Import the base URL
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ const Login = () => {
         try {
             console.log('Submitting login:', { email, password });
 
-            const response = await fetch('http://3.239.96.231:5000/api/auth/login', {
+            const response = await fetch(`${BASE_URL}/api/auth/login`, { // Use the base URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Adjust the path as needed
 
 const AddTimeSlot = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +30,8 @@ const AddTimeSlot = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.post('http://localhost:5000/api/timeslots', formData, {
+      // Make the API request using BASE_URL
+      await axios.post(`${BASE_URL}/api/timeslots`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': token,
@@ -38,6 +40,7 @@ const AddTimeSlot = () => {
 
       toast.success('Time slot created successfully!');
 
+      // Clear form fields
       setFormData({
         timeSlotLength: '',
         price: '',

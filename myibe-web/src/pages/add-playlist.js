@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config';  // Import the base URL
 
 const AddPlaylist = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,8 @@ const AddPlaylist = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.post('http://localhost:5000/api/playlists', formData, {
+      // Make the API request using BASE_URL
+      await axios.post(`${BASE_URL}/api/playlists`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': token,
@@ -37,6 +39,7 @@ const AddPlaylist = () => {
 
       toast.success('Playlist created successfully!');
 
+      // Clear form
       setFormData({
         playlistName: '',
       });

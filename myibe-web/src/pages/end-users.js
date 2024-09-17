@@ -6,6 +6,8 @@ import { useLocation, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import BASE_URL from './config'; // Import the base URL
+
 const EndUsers = () => {
   const [musics, setMusics] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +27,7 @@ const EndUsers = () => {
       try {
         const userId = getUserIdFromURL(); // Get userId from URL
 
-        const response = await axios.get(`http://localhost:5000/api/playlist/public-user-songs`, {
+        const response = await axios.get(`${BASE_URL}/api/playlist/public-user-songs`, {
           params: { userId }, // Pass userId in query params
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
@@ -82,7 +84,7 @@ const EndUsers = () => {
       });
   
       const response = await axios.post(
-        'http://localhost:5000/api/playlist/add-to-queue',
+        `${BASE_URL}/api/playlist/add-to-queue`,
         { 
           songId: selectedMusic._id,  // Song ID
           userId: userId,              // User ID from either localStorage or URL

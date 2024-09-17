@@ -1,7 +1,9 @@
+// src/EditProfile.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Import the BASE_URL
 
 const EditProfile = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +22,7 @@ const EditProfile = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const response = await axios.get('http://localhost:5000/api/auth/users/profile', {
+        const response = await axios.get(`${BASE_URL}/api/auth/users/profile`, {
           headers: {
             'x-auth-token': token,
           },
@@ -60,7 +62,7 @@ const EditProfile = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.put('http://localhost:5000/api/auth/users/me', formData, {
+      const response = await axios.put(`${BASE_URL}/api/auth/users/me`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': token,
@@ -76,7 +78,6 @@ const EditProfile = () => {
     }
   };
 
-  
   return (
     <div className="edit-profile">
       <main className="content">
@@ -133,7 +134,7 @@ const EditProfile = () => {
                 type="text"
                 id="venueType"
                 name="venueType"
-                value={formData.role}
+                value={formData.venueType}
                 onChange={handleChange}
                 required
               />

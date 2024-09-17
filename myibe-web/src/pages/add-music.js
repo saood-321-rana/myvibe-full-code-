@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config';  // Import the base URL
 
 const AddMusic = () => {
   const [formData, setFormData] = useState({
@@ -56,16 +57,16 @@ const AddMusic = () => {
       // Retrieve token from local storage
       const token = localStorage.getItem('token');
       
-      // Make the API request
-      const response = await axios.post('http://localhost:5000/api/music', data, {
+      // Make the API request using BASE_URL
+      const response = await axios.post(`${BASE_URL}/api/music`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'x-auth-token': token,  // Include the token in the headers
         },
       });
 
-      // Handle success
-      toast.success('Music added successfully!');
+      // Handle success with response data
+      toast.success(`Music added successfully! ID: ${response.data.id}`);
       
       // Clear form fields
       setFormData({

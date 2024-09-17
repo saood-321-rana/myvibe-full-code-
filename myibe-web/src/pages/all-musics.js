@@ -4,6 +4,7 @@ import { Modal, Button, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Adjust the path as needed
 
 const AllMusics = () => {
   const [musics, setMusics] = useState([]);
@@ -13,7 +14,7 @@ const AllMusics = () => {
   useEffect(() => {
     const fetchMusics = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/music', {
+        const response = await axios.get(`${BASE_URL}/api/music`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setMusics(response.data);
@@ -29,7 +30,7 @@ const AllMusics = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this music?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/music/${id}`, {
+        await axios.delete(`${BASE_URL}/api/music/${id}`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setMusics(musics.filter(music => music._id !== id));
@@ -43,7 +44,7 @@ const AllMusics = () => {
 
   const handleEdit = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/music/${id}`, editData, {
+      const response = await axios.put(`${BASE_URL}/api/music/${id}`, editData, {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       setMusics(musics.map(music => (music._id === id ? response.data : music)));
@@ -80,7 +81,7 @@ const AllMusics = () => {
                   <td>
                     <audio controls>
                       <source 
-                        src={`http://localhost:5000/${music.song}`} 
+                        src={`${BASE_URL}/${music.song}`} 
                         type="audio/mpeg"
                         onError={() => toast.error('Error loading audio file.')}
                       />

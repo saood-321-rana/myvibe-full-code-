@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Table, Alert, Button } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Import the base URL
 
 const Queue = () => {
   const [musics, setMusics] = useState([]);
   const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
   const location = useLocation();
-  const [intervalId, setIntervalId] = useState(null);
 
   // Extract userId from URL
   const getUserIdFromURL = () => {
@@ -21,12 +21,12 @@ const Queue = () => {
   const userId = getUserIdFromURL(); // Extract userId
 
   // Fetch queued musics for the user
-  const fetchQueueMusics = async () => {
+  const fetchQueueMusics = useCallback(async () => {
     try {
       if (userId) {
-        const response = await axios.get('http://localhost:5000/api/playlist/queue-songs', {
+        const response = await axios.get(`${BASE_URL}/api/playlist/queue-songs`, {
           params: { userId },
-          headers: { 'x-auth-token': localStorage.getItem('token') }
+          headers: { 'x-auth-token': localStorage.getItem('token') },
         });
         console.log('Fetched queue musics:', response.data);
         setMusics(response.data); // Set the musics in the state
@@ -37,7 +37,7 @@ const Queue = () => {
       console.error('Error fetching queue music:', error);
       toast.error('Error fetching queue music. Please try again.');
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     fetchQueueMusics(); // Fetch data when component mounts
@@ -46,12 +46,10 @@ const Queue = () => {
     const id = setInterval(() => {
       fetchQueueMusics();
     }, 5000);
-    
-    setIntervalId(id);
 
     // Cleanup interval on component unmount
     return () => clearInterval(id);
-  }, [userId]);
+  }, [fetchQueueMusics]); // Include fetchQueueMusics in the dependency array
 
   // Play a specific music at the given index
   const playMusicAtIndex = (index) => {
@@ -84,7 +82,7 @@ const Queue = () => {
     if (audio) {
       if (audio.paused) {
         audio.play();
-        setCurrentPlayingIndex(musics.findIndex(music => music._id === musicId));
+        setCurrentPlayingIndex(musics.findIndex((music) => music._id === musicId));
       } else {
         audio.pause();
         setCurrentPlayingIndex(null); // Reset the current playing index when paused
@@ -94,17 +92,20 @@ const Queue = () => {
 
   // Determine the play button class based on the music's play state
   const getPlayButtonClass = (musicId) => {
-    const isPlaying = currentPlayingIndex !== null && !document.querySelector(`audio[data-id='${musicId}']`)?.paused;
+    const isPlaying =
+      currentPlayingIndex !== null && !document.querySelector(`audio[data-id='${musicId}']`)?.paused;
     return isPlaying ? 'play-button playing' : 'play-button';
   };
 
   return (
-    <div className='container mt-4'>
-      <div className='lock'>
-        <img src='images/logo.png' width={230} height={100} alt="Logo" />
+    <div className="container mt-4">
+      <div className="lock">
+        <img src="images/logo.png" width={230} height={100} alt="Logo" />
       </div>
       <h1 className="mb-2 mt-3">Songs in Queue</h1>
-      <Button onClick={handlePlayAll} className="mb-4" disabled={musics.length === 0}>Play All</Button>
+      <Button onClick={handlePlayAll} className="mb-4" disabled={musics.length === 0}>
+        Play All
+      </Button>
       <Table striped bordered hover responsive>
         <tbody>
           {musics.length === 0 ? (
@@ -116,21 +117,29 @@ const Queue = () => {
           ) : (
             musics.map((music, index) => (
               <tr key={music._id}>
-                <td><h2>{music.songName} - {music.artistName}</h2></td>
+                <td>
+                  <h2>
+                    {music.songName} - {music.artistName}
+                  </h2>
+                </td>
                 <td>
                   <div className="music-item">
-                    <Button 
-                      className={getPlayButtonClass(music._id)} 
+                    <Button
+                      className={getPlayButtonClass(music._id)}
                       onClick={(e) => handlePlayPause(music._id, e.target.nextSibling)}
                     >
-                      {currentPlayingIndex === index && !document.querySelector(`audio[data-id='${music._id}']`)?.paused ? '⏸️' : '▶️'}
+                      {currentPlayingIndex === index &&
+                      !document.querySelector(`audio[data-id='${music._id}']`)?.paused
+                        ? '⏸️'
+                        : '▶️'}
                     </Button>
-                    <audio 
-                      src={`http://localhost:5000/${music.song}`} 
+                    <audio
+                      src={`${BASE_URL}/${music.song}`} // Use base URL for audio file
                       type="audio/mpeg"
                       data-id={music._id}
-                      ref={audio => {
-                        if (audio) audio.addEventListener('error', () => toast.error('Error loading audio file.'));
+                      ref={(audio) => {
+                        if (audio)
+                          audio.addEventListener('error', () => toast.error('Error loading audio file.'));
                       }}
                     />
                   </div>

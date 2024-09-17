@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
+import BASE_URL from './config'; // Adjust the path as needed
 
 const AllPlaylists = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -15,7 +16,7 @@ const AllPlaylists = () => {
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/playlists', {
+        const response = await axios.get(`${BASE_URL}/api/playlists`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setPlaylists(response.data);
@@ -31,7 +32,7 @@ const AllPlaylists = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this playlist?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/playlists/${id}`, {
+        await axios.delete(`${BASE_URL}/api/playlists/${id}`, {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setPlaylists(playlists.filter(playlist => playlist._id !== id));
@@ -45,7 +46,7 @@ const AllPlaylists = () => {
 
   const handleEdit = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/playlists/${id}`, editData, {
+      const response = await axios.put(`${BASE_URL}/api/playlists/${id}`, editData, {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       setPlaylists(playlists.map(playlist => (playlist._id === id ? response.data : playlist)));
