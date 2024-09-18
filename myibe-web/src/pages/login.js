@@ -42,7 +42,7 @@ const Login = () => {
                         navigate('/club-dashboard');
                         break;
                     default:
-                        navigate('/r-dashboard');
+                        navigate('/club-dashboard');
                         break;
                 }
             } else {

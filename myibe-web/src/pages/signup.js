@@ -55,7 +55,7 @@ const Signup = () => {
         } else if (venueType === 'club') {
           navigate('/club-dashboard');
         } else {
-          navigate('/r-dashboard');
+          navigate('/club-dashboard');
         }
       } else {
         console.error('Error response:', data);

@@ -41,12 +41,13 @@ import Loader from './components/loader';
 import AllPlaylists from './pages/all-playlists';
 import AllTimeSlots from './pages/all-time-slots';
 import UserRequests from './pages/user-requests';
+import EditUser from './pages/edit-user';
 
 const MainLayout = () => {
   const location = useLocation(); // useLocation hook is now defined
 
   // Define routes where Navbar and Footer should be hidden
-  const noHeaderFooterRoutes = ['/admin-dashboard', '/club-dashboard', '/add-music', '/add-time-slot','/all-musics', '/all-users', '/r-dashboard', '/add-playlist', '/add-song', '/all-playlists', '/playlist-wise-songs', '/generate-new', '/all-songs', '/all-time-slots', '/edit-profile', '/user-requests'];
+  const noHeaderFooterRoutes = ['/admin-dashboard', '/club-dashboard', '/add-music', '/add-time-slot','/all-musics', '/all-users', '/r-dashboard', '/add-playlist', '/add-song', '/all-playlists', '/playlist-wise-songs', '/generate-new', '/all-songs', '/all-time-slots', '/edit-profile', '/user-requests', '/edit-user', '/end-users', '/queue'];
   const noHeaderFooter = ['/end-users'];
   const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
 
@@ -64,7 +65,7 @@ const MainLayout = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      {(location.pathname === '/admin-dashboard' || location.pathname === '/add-music' || location.pathname === '/all-musics' || location.pathname === '/all-users' || location.pathname === '/club-dashboard' || location.pathname === '/r-dashboard' || location.pathname === '/add-playlist' || location.pathname === '/add-song' || location.pathname === '/all-playlists' || location.pathname === '/playlist-wise-songs' || location.pathname === '/all-songs' || location.pathname === '/generate-new' || location.pathname === '/add-time-slot' || location.pathname === '/all-time-slots' || location.pathname === '/edit-profile' || location.pathname === '/user-requests' ) && <Sidebar />}
+      {(location.pathname === '/admin-dashboard' || location.pathname === '/add-music' || location.pathname === '/all-musics' || location.pathname === '/all-users' || location.pathname === '/club-dashboard' || location.pathname === '/r-dashboard' || location.pathname === '/add-playlist' || location.pathname === '/add-song' || location.pathname === '/all-playlists' || location.pathname === '/playlist-wise-songs' || location.pathname === '/all-songs' || location.pathname === '/generate-new' || location.pathname === '/add-time-slot' || location.pathname === '/all-time-slots' || location.pathname === '/edit-profile' || location.pathname === '/user-requests' || location.pathname === '/edit-user' ) && <Sidebar />}
       <div style={{ flex: 1 }}>
         {showHeaderFooter && <Navbar />}
         <Routes>
@@ -83,6 +84,7 @@ const MainLayout = () => {
           <Route path="/Career" element={<Career />} />
           <Route path="/queue" element={<Queue />} />
           <Route path="/Stadium" element={<Stadium />} />
+          <Route path="/edit-user" element={<EditUser />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/club-dashboard" element={<ClubDashboard />} />
           <Route path="/r-dashboard" element={<RDashboard />} />

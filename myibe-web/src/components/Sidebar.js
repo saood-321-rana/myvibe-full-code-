@@ -23,7 +23,7 @@ const Sidebar = () => {
 
   // Determine which sidebar links to show based on the current route
   const adminRoutes = ['/admin-dashboard', '/add-music', '/all-musics', '/all-users', '/edit-profile'];
-  const clubRoutes = ['/club-dashboard', '/add-playlist', '/add-song', '/all-songs', '/all-playlists', '/playlist-wise-songs', '/all-songs', '/generate-new', '/end-users', '/add-time-slot', '/all-time-slots', '/user-requests'];
+  const clubRoutes = ['/club-dashboard', '/add-playlist', '/add-song', '/all-songs', '/all-playlists', '/edit-user','/playlist-wise-songs', '/all-songs', '/generate-new', '/end-users', '/add-time-slot', '/all-time-slots', '/user-requests'];
   const otherRoutes = ['/r-dashboard'];
   const isAdmin = adminRoutes.some(route => location.pathname.startsWith(route));
   const isClub = clubRoutes.some(route => location.pathname.startsWith(route));
@@ -197,7 +197,7 @@ const Sidebar = () => {
                 <ul className="menu_items">
             <div className="menu_title menu_setting"></div>
             <li className="item">
-              <Link to="/edit-profile" className="nav_link" onClick={handleLinkClick}>
+              <Link to="/edit-user" className="nav_link" onClick={handleLinkClick}>
                 <span className="navlink_icon">
                   <i className="bx bx-edit"></i>
                 </span>
