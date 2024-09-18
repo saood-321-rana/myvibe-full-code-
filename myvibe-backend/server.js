@@ -16,10 +16,7 @@ connectDB().catch((err) => {
 });
 
 // Middleware
-app.use(cors({
-  origin: 'http://54.224.211.138:5000', // Update this to your frontend URL
-  credentials: true // Allow credentials if needed
-}));
+app.use(cors()); // Configure CORS if necessary
 app.use(express.json()); // For parsing JSON requests
 
 // Serve static files (React app build)
@@ -58,7 +55,7 @@ const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*", // Allow any origin for WebSocket. Adjust for production for security.
+    origin: "*", // Allow any origin. Adjust this for production for security.
     methods: ["GET", "POST"]
   }
 });
