@@ -20,7 +20,7 @@ app.use(cors()); // Configure CORS if necessary
 app.use(express.json()); // For parsing JSON requests
 
 // Serve static files (React app build)
-const buildPath = path.join(__dirname, "../myibe-web/build");
+const buildPath = path.join(__dirname, "build");
 app.use(express.static(buildPath));
 
 // Serve static files from the 'uploads' directory
