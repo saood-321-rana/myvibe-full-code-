@@ -37,9 +37,9 @@ const GenerateNew = () => {
 
     if (id) {
       setUserId(id);
-      setLink(`http://localhost:3000/end-users?userId=${id}`);
+      setLink(`http://54.224.211.138:5000/end-users?userId=${id}`);
     } else {
-      setLink('http://localhost:3000/all-songs');
+      setLink('http://54.224.211.138:5000/all-songs');
     }
   }, []);
 

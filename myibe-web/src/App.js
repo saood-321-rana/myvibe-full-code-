@@ -42,31 +42,61 @@ import AllPlaylists from './pages/all-playlists';
 import AllTimeSlots from './pages/all-time-slots';
 import UserRequests from './pages/user-requests';
 import EditUser from './pages/edit-user';
+import ForgotPassword from './pages/forgot-password';
+import ResetPassword from './pages/reset-password';
+import UserQueue from './pages/user-queue';
 
 const MainLayout = () => {
-  const location = useLocation(); // useLocation hook is now defined
+  const location = useLocation();
 
   // Define routes where Navbar and Footer should be hidden
-  const noHeaderFooterRoutes = ['/admin-dashboard', '/club-dashboard', '/add-music', '/add-time-slot','/all-musics', '/all-users', '/r-dashboard', '/add-playlist', '/add-song', '/all-playlists', '/playlist-wise-songs', '/generate-new', '/all-songs', '/all-time-slots', '/edit-profile', '/user-requests', '/edit-user', '/end-users', '/queue'];
-  const noHeaderFooter = ['/end-users'];
-  const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
+  const noHeaderFooterRoutes = [
+    '/admin-dashboard', '/club-dashboard', '/add-music', '/add-time-slot',
+    '/all-musics', '/all-users', '/r-dashboard', '/add-playlist', '/add-song',
+    '/all-playlists', '/playlist-wise-songs', '/generate-new', '/all-songs', 
+    '/all-time-slots', '/edit-profile', '/user-requests', '/edit-user' 
+    
+  ];
 
-  // Check for a valid token in local storage
+  // Add /end-users to hide header and footer but allow public access
+  const noHeaderFooterPublicRoutes = ['/end-users', '/queue', '/user-queue'];
+
+  // Check if the current route should hide the header and footer
+  const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname) && !noHeaderFooterPublicRoutes.includes(location.pathname);
+
+  // Check for a valid token in local storage for private routes
   const token = localStorage.getItem('token');
 
-  // Redirect to login if accessing admin routes without a valid token
+  // Redirect to login if accessing private routes without a valid token
   if (!token && noHeaderFooterRoutes.includes(location.pathname)) {
     return <Navigate to="/login" replace />;
   }
 
-  if (noHeaderFooter.includes(location.pathname)) {
-    
-  }
-
   return (
     <div style={{ display: 'flex' }}>
-      {(location.pathname === '/admin-dashboard' || location.pathname === '/add-music' || location.pathname === '/all-musics' || location.pathname === '/all-users' || location.pathname === '/club-dashboard' || location.pathname === '/r-dashboard' || location.pathname === '/add-playlist' || location.pathname === '/add-song' || location.pathname === '/all-playlists' || location.pathname === '/playlist-wise-songs' || location.pathname === '/all-songs' || location.pathname === '/generate-new' || location.pathname === '/add-time-slot' || location.pathname === '/all-time-slots' || location.pathname === '/edit-profile' || location.pathname === '/user-requests' || location.pathname === '/edit-user' ) && <Sidebar />}
+      {/* Show Sidebar for certain private routes */}
+      {(
+        location.pathname === '/admin-dashboard' || 
+        location.pathname === '/add-music' || 
+        location.pathname === '/all-musics' || 
+        location.pathname === '/all-users' || 
+        location.pathname === '/club-dashboard' || 
+        location.pathname === '/r-dashboard' || 
+        location.pathname === '/add-playlist' || 
+        location.pathname === '/add-song' || 
+        location.pathname === '/all-playlists' || 
+        location.pathname === '/playlist-wise-songs' || 
+        location.pathname === '/all-songs' || 
+        location.pathname === '/generate-new' || 
+        location.pathname === '/add-time-slot' || 
+        location.pathname === '/all-time-slots' || 
+        location.pathname === '/edit-profile' || 
+        location.pathname === '/user-requests' || 
+        location.pathname === '/edit-user'
+      ) && <Sidebar />}
+      
       <div style={{ flex: 1 }}>
+        {/* Conditionally render Navbar and Footer */}
         {showHeaderFooter && <Navbar />}
         <Routes>
           <Route path="/" element={<Home />} />
@@ -98,20 +128,25 @@ const MainLayout = () => {
           <Route path="/all-musics" element={<AllMusics />} />
           <Route path="/all-time-slots" element={<AllTimeSlots />} />
           <Route path="/all-songs" element={<AllSongs />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/end-users" element={<EndUsers />} />
+          <Route path="/user-queue" element={<UserQueue />} />
           <Route path="/playlist-wise-songs" element={<PlaylistSongs />} />
           <Route path="/all-users" element={<AllUsers />} />
           <Route path="/Clubs" element={<Clubs />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/FirstBlog" element={<FirstBlog />} />
           <Route path="/SecondBlog" element={<SecondBlog />} />
           <Route path="/blogs" element={<Blogs />} />
         </Routes>
+        {/* Conditionally render Footer and ScrollToTopButton */}
         {showHeaderFooter && <Footer />}
         {showHeaderFooter && <ScrollToTopButton />}
       </div>
     </div>
   );
 };
+
 
 const App = () => {
   const [loading, setLoading] = useState(true);

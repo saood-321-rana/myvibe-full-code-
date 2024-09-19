@@ -109,7 +109,12 @@ const EndUsers = () => {
   };
 
   const userId = getUserIdFromURL(); // Extract userId for the button link
-
+  const storedUserId = localStorage.getItem('userId'); // Get userId from local storage
+  const urlUserId = getUserIdFromURL(); // Extract userId from the URL
+  const queueLink = storedUserId 
+    ? `/queue?userId=${storedUserId}`  // If userId exists in local storage
+    : `/user-queue?userId=${urlUserId}`; // If userId doesn't exist in local storage, use userId from URL
+  
   return (
     <div className='container mt-4'>
       <div className='lock'>
@@ -154,10 +159,10 @@ const EndUsers = () => {
       </Modal>
 
       <div className='bnn'>
-        <Link to={`/queue?userId=${userId}`} className="see-queue-btn">
-          <Button variant="dark">See Queue</Button>
-        </Link>
-      </div>
+      <Link to={queueLink} className="see-queue-btn">
+        <Button variant="dark">See Queue</Button>
+      </Link>
+    </div>
 
       <ToastContainer />
     </div>

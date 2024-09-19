@@ -95,7 +95,7 @@ const Login = () => {
 
                                     <div className="form-check d-flex justify-content-start mb-4">
                                         <label className="form-check-label" htmlFor="form1Example3">
-                                            <Link to="/signup" className='text-light'>Forgotten password?</Link>
+                                            <Link to="/forgot-password" className='text-light'>Forgotten password?</Link>
                                         </label>
                                     </div>
 
