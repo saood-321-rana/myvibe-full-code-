@@ -31,13 +31,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-//   status: { // Add status field
-//     type: Number,
-//     required: true,
-//   },
   password: {
     type: String,
     required: true,
+  },
+  resetPasswordToken: {
+    type: String,
+  },
+  resetPasswordExpire: {
+    type: Date,
   },
 });
 

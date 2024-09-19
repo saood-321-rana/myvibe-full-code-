@@ -9,6 +9,8 @@ const auth = require('../middleware/auth'); // Import the auth middleware
 const signup = async (req, res) => {
   const { name, email, phone, venueName, venueType, address, role, password, confirmPassword } = req.body;
 
+  console.log('Request Body:', req.body);
+
   if (password !== confirmPassword) {
     return res.status(400).json({ msg: 'Passwords do not match' });
   }
@@ -19,9 +21,6 @@ const signup = async (req, res) => {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = new User({
       name,
       email,
@@ -30,18 +29,21 @@ const signup = async (req, res) => {
       venueType,
       address,
       role,
-      password: hashedPassword, // Store hashed password
+      password,
     });
 
     await newUser.save();
-    console.log('User saved:', newUser);
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Logging to check if the name is correctly saved
+    console.log('New User:', newUser); 
 
-    res.json({
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    // Respond with token and username
+    return res.json({
       token,
-      userId: newUser._id,     // Include userId in response
-      userName: newUser.name,  // Include userName in response
+      userId: newUser._id,
+      username: newUser.name,  // Ensure this is correct
       venueType: newUser.venueType,
     });
   } catch (err) {
@@ -49,6 +51,8 @@ const signup = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+
 // @desc    Authenticate user and get token
 // @route   POST api/auth/login
 // @access  Public
@@ -56,38 +60,32 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    console.log('Login request:', { email, password });
-
     const user = await User.findOne({ email });
     if (!user) {
-      console.log('User not found');
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    console.log('Stored hashed password:', user.password);
-
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log('Password comparison result:', isMatch);
-
     if (!isMatch) {
-      console.log('Password does not match');
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-    res.json({
+    // Logging to check if the name is correctly fetched
+    console.log('Login User:', user); 
+
+    return res.json({
       token,
-      userId: user._id,  // Return userId
+      userId: user._id,
+      username: user.name,  // Ensure this is correct
       venueType: user.venueType,
-      userName: user.name
     });
   } catch (err) {
     console.error('Login Error:', err);
     res.status(500).send('Server error');
   }
 };
-
 
 // @desc    Get all users
 // @route   GET api/users
