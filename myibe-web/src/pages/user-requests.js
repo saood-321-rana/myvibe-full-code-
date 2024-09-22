@@ -110,7 +110,7 @@ const UserRequests = () => {
                         className="ms-2"
                         onClick={() => updateSongStatus(music._id)} // Call handler with song ID
                       >
-                        Update Queue
+                        Add To Queue
                       </Button>
                     </td>
                   </tr>

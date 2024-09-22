@@ -9,7 +9,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission behavior
         
         try {
             console.log('Submitting login:', { email, password });
@@ -19,19 +19,20 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password }), // Send email and password
             });
 
-            const data = await response.json();
-            console.log('API Response:', data); 
+            const data = await response.json(); // Get the response as JSON
+            console.log('API Response:', data);
 
             if (response.ok) {
-                const { token, userId, venueType, userName } = data; // Extract userName
+                const { token, userId, venueType, username } = data; // Extract values from response
 
                 // Store token, userId, and userName in localStorage
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', userId);
-                localStorage.setItem('userName', userName); // Save username
+                localStorage.setItem('username', username); // Save username
+                localStorage.setItem('venueType', venueType); // Save venueType
 
                 // Redirect based on venueType
                 switch (venueType) {
@@ -47,11 +48,11 @@ const Login = () => {
                 }
             } else {
                 console.error('Error response:', data); 
-                setError(data.msg || 'Your email or password is incorrect');
+                setError(data.msg || 'Your email or password is incorrect'); // Show error message
             }
         } catch (err) {
-            console.error('Fetch error:', err); 
-            setError('An error occurred. Please try again.');
+            console.error('Fetch error:', err);
+            setError('An error occurred. Please try again.'); // Handle fetch errors
         }
     };
 
@@ -64,6 +65,7 @@ const Login = () => {
                             <div className="card-body p-5 text-center">
                                 <h3 className="mb-5">SIGN IN</h3>
 
+                                {/* Display error message if there is an error */}
                                 {error && <div className="alert alert-danger">{error}</div>}
 
                                 <form onSubmit={handleLogin}>

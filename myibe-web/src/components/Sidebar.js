@@ -22,8 +22,8 @@ const Sidebar = () => {
   };
 
   // Determine which sidebar links to show based on the current route
-  const adminRoutes = ['/admin-dashboard', '/add-music', '/all-musics', '/all-users', '/edit-profile'];
-  const clubRoutes = ['/club-dashboard', '/add-playlist', '/add-song', '/all-songs', '/all-playlists', '/edit-user','/playlist-wise-songs', '/all-songs', '/generate-new', '/end-users', '/add-time-slot', '/all-time-slots', '/user-requests'];
+  const adminRoutes = ['/admin-dashboard', '/add-music', '/all-musics', '/all-users', '/edit-profile', '/suggested-songs'];
+  const clubRoutes = ['/club-dashboard', '/add-playlist', '/add-song', '/all-songs', '/all-playlists', '/edit-user','/playlist-wise-songs', '/add-user-song','/all-songs', '/generate-new', '/end-users', '/add-time-slot', '/all-time-slots', '/user-requests'];
   const otherRoutes = ['/r-dashboard'];
   const isAdmin = adminRoutes.some(route => location.pathname.startsWith(route));
   const isClub = clubRoutes.some(route => location.pathname.startsWith(route));
@@ -71,6 +71,14 @@ const Sidebar = () => {
                       <i className="bx bx-music"></i>
                     </span>
                     <span className="navlink">All Songs</span>
+                  </Link>
+                </li>
+                <li className="item">
+                  <Link to={`/suggested-songs`} className="nav_link" onClick={handleLinkClick}>
+                    <span className="navlink_icon">
+                      <i className="bx bx-music"></i>
+                    </span>
+                    <span className="navlink">Suggested Songs</span>
                   </Link>
                 </li>
                 <li className="item">
@@ -136,6 +144,7 @@ const Sidebar = () => {
                       <span className="navlink">All Playlists</span>
                     </Link>
                   </li>
+                  
                   <li className="item">
                     <Link to={`/all-songs?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
                       <span className="navlink_icon">
@@ -145,13 +154,51 @@ const Sidebar = () => {
                     </Link>
                   </li>
                   <li className="item">
+                  <Link to="/add-user-song" className="nav_link submenu_item" onClick={handleLinkClick}>
+                    <span className="navlink_icon">
+                      <i className="bx bx-music"></i>
+                    </span>
+                    <span className="navlink">Suggest song</span>
+                  </Link>
+                </li>
+                </ul>
+                <ul className="menu_items">
+                  <div className="menu_title">Manage queue</div>
+                  <li className="item">
+                  <Link to={`/end-users?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
+                    <span className="navlink_icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M20 2H8c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2M8 16V4h12l.002 12z"/><path fill="currentColor" d="M4 8H2v12c0 1.103.897 2 2 2h12v-2H4zm11-2h-2v3h-3v2h3v3h2v-3h3V9h-3z"/></svg>
+                    </span>
+                    <span className="navlink">Add song to queue</span>
+                  </Link>
+                </li>
+                <li className="item">
                   <Link to={`/user-requests?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
                     <span className="navlink_icon">
                       <i className="bx bx-user"></i>
                     </span>
-                    <span className="navlink">User Requests</span>
+                    <span className="navlink">User songs for queue</span>
                   </Link>
                 </li>
+                <li className="item">
+                  <Link to={`/queue?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
+                    <span className="navlink_icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M20 2H8c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2M8 16V4h12l.002 12z"/><path fill="currentColor" d="M4 8H2v12c0 1.103.897 2 2 2h12v-2H4zm11-2h-2v3h-3v2h3v3h2v-3h3V9h-3z"/></svg>
+                    </span>
+                    <span className="navlink">Live queue</span>
+                  </Link>
+                </li>
+                </ul>
+                <ul className="menu_items">
+                  <div className="menu_title">Manage QR Codes</div>
+                  <li className="item">
+                    <Link to={`/generate-new?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
+                    <span className="navlink_icon">
+                        <FontAwesomeIcon icon={faQrcode} />
+                      </span>
+                      <span className="navlink">Generate New</span>
+                    </Link>
+                  </li>
                 </ul>
                 <ul className="menu_items">
                   <div className="menu_title">Manage time slots and pricing</div>
@@ -172,28 +219,8 @@ const Sidebar = () => {
                     </Link>
                   </li>
                 </ul>
-                <ul className="menu_items">
-                  <div className="menu_title">Manage QR Codes</div>
-                  <li className="item">
-                    <Link to={`/generate-new?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
-                    <span className="navlink_icon">
-                        <FontAwesomeIcon icon={faQrcode} />
-                      </span>
-                      <span className="navlink">Generate New</span>
-                    </Link>
-                  </li>
-                </ul>
-                <ul className="menu_items">
-                  <div className="menu_title">End user interface</div>
-                  <li className="item">
-                  <Link to={`/end-users?userId=${userId}`} className="nav_link" onClick={handleLinkClick}>
-                    <span className="navlink_icon">
-                      <i className="bx bx-user"></i>
-                    </span>
-                    <span className="navlink">End Users Interface</span>
-                  </Link>
-                </li>
-                </ul>
+               
+               
                 <ul className="menu_items">
             <div className="menu_title menu_setting"></div>
             <li className="item">

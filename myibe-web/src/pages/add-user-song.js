@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BASE_URL from './config';  // Import the base URL
 
-const AddMusic = () => {
+const AddUserSong = () => {
   const [formData, setFormData] = useState({
     songName: '',
     artistName: '',
@@ -91,7 +91,7 @@ const AddMusic = () => {
     <div className="admin-dashboard">
       <main className="content">
         <div className="form_container">
-          <h2>Add New Song</h2>
+          <h2>Suggest us song</h2>
           <form onSubmit={handleSubmit}>
             <div className="form_group">
               <label htmlFor="songName">Song Name:</label>
@@ -135,4 +135,4 @@ const AddMusic = () => {
   );
 };
 
-export default AddMusic;
+export default AddUserSong;

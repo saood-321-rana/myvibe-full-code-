@@ -42,12 +42,13 @@ const Signup = () => {
       console.log('API Response:', data);
 
       if (response.ok) {
-        const { token, userId, userName, venueType } = data; // Extract userName
+        const { token, userId, username, venueType } = data; // Extract userName
 
         // Store token, userId, and userName in localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId);
-        localStorage.setItem('userName', userName);
+        localStorage.setItem('username', username);
+        localStorage.setItem('venueType', venueType);
 
         // Redirect based on venueType
         if (venueType === 'admin') {
