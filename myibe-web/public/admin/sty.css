@@ -27,6 +27,8 @@
 }
 .trc{
   float: right !important;
+  margin-top: -30px !important;
+  font-size: 30px !important;
 }
 
 .see-queue-btn {
