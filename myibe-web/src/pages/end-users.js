@@ -13,6 +13,7 @@ const EndUsers = () => {
   const [favorites, setFavorites] = useState([]); // New state for favorites
   const [showModal, setShowModal] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
+  const [showSplash, setShowSplash] = useState(true); // Splash screen state
   const location = useLocation(); // Access the URL
 
   // Function to extract userId from query params
@@ -41,7 +42,12 @@ const EndUsers = () => {
       }
     };
 
+    // Fetch music and hide splash screen after 2 seconds
     fetchMusics();
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 5000); // Adjust splash duration here
+
   }, [getUserIdFromURL, location]);
 
   const handleShowModal = (music) => {
@@ -113,8 +119,17 @@ const EndUsers = () => {
   const urlUserId = getUserIdFromURL(); // Extract userId from the URL
   const queueLink = storedUserId 
     ? `/queue?userId=${storedUserId}`  // If userId exists in local storage
-    : `/user-queue?userId=${urlUserId}`; // If userId doesn't exist in local storage, use userId from URL
-  
+    : `/queue?userId=${urlUserId}`; // If userId doesn't exist in local storage, use userId from URL
+
+  // Render splash screen if showSplash is true
+  if (showSplash) {
+    return (
+      <div className="splash-screen">
+        <img src="images/sc.jpg" alt="Splash" style={{ width: '100%', height: '80vh'}} />
+      </div>
+    );
+  }
+
   return (
     <div className='container mt-4'>
       <div className='lock'>

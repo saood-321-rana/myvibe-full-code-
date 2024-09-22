@@ -5,22 +5,21 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
-import BASE_URL from './config'; // Import the base URL
+import BASE_URL from './config';
 
 const Queue = () => {
   const [musics, setMusics] = useState([]);
   const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
   const location = useLocation();
 
-  // Extract userId from URL
   const getUserIdFromURL = () => {
     const params = new URLSearchParams(location.search);
     return params.get('userId');
   };
 
-  const userId = getUserIdFromURL(); // Extract userId
+  const userId = getUserIdFromURL();
+  const isUserIdAvailable = localStorage.getItem('userId') !== null;
 
-  // Fetch queued musics for the user
   const fetchQueueMusics = useCallback(async () => {
     try {
       if (userId) {
@@ -28,8 +27,7 @@ const Queue = () => {
           params: { userId },
           headers: { 'x-auth-token': localStorage.getItem('token') },
         });
-        console.log('Fetched queue musics:', response.data);
-        setMusics(response.data); // Set the musics in the state
+        setMusics(response.data);
       } else {
         toast.error('No userId found in URL.');
       }
@@ -40,28 +38,36 @@ const Queue = () => {
   }, [userId]);
 
   useEffect(() => {
-    fetchQueueMusics(); // Fetch data when component mounts
-
-    // Set up interval to fetch data every 5 seconds (5000ms)
-    const id = setInterval(() => {
-      fetchQueueMusics();
-    }, 5000);
-
-    // Cleanup interval on component unmount
+    fetchQueueMusics();
+    const id = setInterval(fetchQueueMusics, 5000);
     return () => clearInterval(id);
-  }, [fetchQueueMusics]); // Include fetchQueueMusics in the dependency array
+  }, [fetchQueueMusics]);
 
-  // Play a specific music at the given index
+  const deleteSongFromQueue = async (musicId) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/playlist/queue/delete/${musicId}`, {
+        headers: { 'x-auth-token': localStorage.getItem('token') },
+      });
+      toast.success('Song deleted from queue successfully.');
+      fetchQueueMusics();
+    } catch (error) {
+      console.error('Error deleting song from queue:', error);
+      toast.error('Error deleting song from queue. Please try again.');
+    }
+  };
+
   const playMusicAtIndex = (index) => {
     const audioElements = document.querySelectorAll('audio');
     if (audioElements.length > 0 && index < audioElements.length) {
       const audioElement = audioElements[index];
       audioElement.play();
       setCurrentPlayingIndex(index);
-      audioElement.onended = () => {
+      
+      audioElement.onended = async () => {
+        await deleteSongFromQueue(musics[index]._id); // Correct reference
         const nextIndex = index + 1;
         if (nextIndex < musics.length) {
-          playMusicAtIndex(nextIndex); // Play the next song
+          playMusicAtIndex(nextIndex);
         } else {
           console.log('All songs have been played.');
         }
@@ -69,14 +75,12 @@ const Queue = () => {
     }
   };
 
-  // Handle play all action
   const handlePlayAll = () => {
     if (musics.length > 0) {
-      playMusicAtIndex(0); // Start playing from the first song
+      playMusicAtIndex(0);
     }
   };
 
-  // Toggle play/pause for a specific song
   const handlePlayPause = (musicId, audioElement) => {
     const audio = audioElement;
     if (audio) {
@@ -85,12 +89,11 @@ const Queue = () => {
         setCurrentPlayingIndex(musics.findIndex((music) => music._id === musicId));
       } else {
         audio.pause();
-        setCurrentPlayingIndex(null); // Reset the current playing index when paused
+        setCurrentPlayingIndex(null);
       }
     }
   };
 
-  // Determine the play button class based on the music's play state
   const getPlayButtonClass = (musicId) => {
     const isPlaying =
       currentPlayingIndex !== null && !document.querySelector(`audio[data-id='${musicId}']`)?.paused;
@@ -103,9 +106,11 @@ const Queue = () => {
         <img src="images/logo.png" width={230} height={100} alt="Logo" />
       </div>
       <h1 className="mb-2 mt-3">Songs in Queue</h1>
-      <Button onClick={handlePlayAll} className="mb-4" disabled={musics.length === 0}>
-        Play All
-      </Button>
+      {isUserIdAvailable && (
+        <Button onClick={handlePlayAll} className="mb-4" disabled={musics.length === 0}>
+          Play All
+        </Button>
+      )}
       <Table striped bordered hover responsive>
         <tbody>
           {musics.length === 0 ? (
@@ -126,7 +131,12 @@ const Queue = () => {
                   <div className="music-item">
                     <Button
                       className={getPlayButtonClass(music._id)}
-                      onClick={(e) => handlePlayPause(music._id, e.target.nextSibling)}
+                      onClick={(e) => {
+                        if (isUserIdAvailable) {
+                          handlePlayPause(music._id, e.target.nextSibling);
+                        }
+                      }}
+                      disabled={!isUserIdAvailable}
                     >
                       {currentPlayingIndex === index &&
                       !document.querySelector(`audio[data-id='${music._id}']`)?.paused
@@ -134,7 +144,7 @@ const Queue = () => {
                         : '▶️'}
                     </Button>
                     <audio
-                      src={`${BASE_URL}/${music.song}`} // Use base URL for audio file
+                      src={`${BASE_URL}/${music.song}`}
                       type="audio/mpeg"
                       data-id={music._id}
                       ref={(audio) => {
