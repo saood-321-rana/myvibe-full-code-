@@ -33,7 +33,7 @@ const Queue = () => {
       }
     } catch (error) {
       console.error('Error fetching queue music:', error);
-      toast.error('Error fetching queue music. Please try again.');
+      toast.error('No song in the queue. Please add song in the queue.');
     }
   }, [userId]);
 

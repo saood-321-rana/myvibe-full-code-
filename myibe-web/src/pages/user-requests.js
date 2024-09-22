@@ -35,7 +35,7 @@ const UserRequests = () => {
       }
     } catch (error) {
       console.error('Error fetching queue music:', error);
-      toast.error('Error fetching queue music. Please try again.');
+      toast.error('No songs found. Please check again after sometime.');
     }
   };
 
