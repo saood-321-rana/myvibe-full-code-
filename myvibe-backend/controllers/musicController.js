@@ -7,7 +7,7 @@ const fs = require('fs');
 // @access  Private
 const addMusic = async (req, res) => {
   try {
-    const { songName, artistName } = req.body;
+    const { songName, artistName, status } = req.body; // Extract status from req.body
     const songFile = req.file; // multer will store the file in req.file
 
     if (!songName || !artistName || !songFile) {
@@ -21,6 +21,7 @@ const addMusic = async (req, res) => {
       songName,
       artistName,
       song: songFilePath, // Store the file path in the database
+      status, // Save status (1 for admin, 0 for non-admin)
     });
 
     const music = await newMusic.save();
@@ -31,18 +32,64 @@ const addMusic = async (req, res) => {
   }
 };
 
-// @desc    Get all music
-// @route   GET api/music
+
+// @desc    Get all music uploaded by admin (status: 1)
+// @route   GET api/music/admin
 // @access  Private
 const getAllMusic = async (req, res) => {
   try {
-    const musics = await Music.find();
+    // Find all music where the status is 1 (admin-uploaded music)
+    const musics = await Music.find({ status: 1 });
+    
     res.json(musics);
   } catch (err) {
-    console.error('Error fetching music:', err);
+    console.error('Error fetching admin music:', err);
     res.status(500).send('Server error');
   }
 };
+
+// @desc    Get all user-uploaded songs (status: 0)
+// @route   GET api/music/user-songs
+// @access  Private
+const getAllUserSongs = async (req, res) => {
+  try {
+    // Find all songs where the status is 0 (user-uploaded songs)
+    const musics = await Music.find({ status: 0 });
+
+    res.json(musics);
+  } catch (err) {
+    console.error('Error fetching user songs:', err);
+    res.status(500).send('Server error');
+  }
+};
+
+// @desc    Approve music (update status from 0 to 1)
+// @route   PUT api/music/approve/:id
+// @access  Private (Admin only)
+const approveMusic = async (req, res) => {
+  try {
+    const music = await Music.findById(req.params.id);
+
+    if (!music) {
+      return res.status(404).json({ msg: 'Music not found' });
+    }
+
+    // Check if the song is already approved
+    if (music.status === 1) {
+      return res.status(400).json({ msg: 'Music is already approved' });
+    }
+
+    // Update status to 1 (approved)
+    music.status = 1;
+    await music.save();
+
+    res.json({ msg: 'Music approved successfully', music });
+  } catch (err) {
+    console.error('Error approving music:', err);
+    res.status(500).send('Server error');
+  }
+};
+
 
 // @desc    Delete a music entry
 // @route   DELETE api/music/:id
@@ -96,5 +143,7 @@ module.exports = {
   addMusic,
   getAllMusic,
   deleteMusic,
-  updateMusic
+  updateMusic,
+  getAllUserSongs, 
+  approveMusic
 };

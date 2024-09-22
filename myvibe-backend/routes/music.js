@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { addMusic, getAllMusic, deleteMusic, updateMusic } = require('../controllers/musicController');
+const { addMusic, getAllMusic, deleteMusic, updateMusic, getAllUserSongs, approveMusic } = require('../controllers/musicController');
 const auth = require('../middleware/auth'); // Assuming you're using auth middleware
 
 // Set storage engine
@@ -28,6 +28,11 @@ router.post('/', auth, upload.single('songFile'), addMusic);
 // @access  Private
 router.get('/', auth, getAllMusic);
 
+// @route   GET api/music
+// @desc    Get all music
+// @access  Private
+router.get('/user-songs', auth, getAllUserSongs);
+
 // @route   DELETE api/music/:id
 // @desc    Delete a music entry
 // @access  Private
@@ -37,5 +42,9 @@ router.delete('/:id', auth, deleteMusic);
 // @desc    Update a music entry
 // @access  Private
 router.put('/:id', auth, updateMusic);
+
+// Approve music by admin
+router.put('/approve/:id', auth, approveMusic);  // `auth` is your middleware to check if the user is logged in
+
 
 module.exports = router;

@@ -15,6 +15,11 @@ const MusicSchema = new mongoose.Schema({
   },
   playlistIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Playlist' }], // Array of playlist IDs
   userIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Array of user IDs
+  status: {
+    type: Number, // 1 for admin, 0 for non-admin
+    default: 0,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Music', MusicSchema);
