@@ -127,8 +127,8 @@ const addToQueue = async (req, res) => {
       return res.status(404).json({ msg: 'Song not found.' });
     }
 
-    // Check if the song is already in the queue
-    const existingQueueEntry = await Queue.findOne({ songId: song._id });
+    // Check if the song is already in the queue for the same user
+    const existingQueueEntry = await Queue.findOne({ songId: song._id, userId: userId });
     if (existingQueueEntry) {
       return res.status(400).json({ msg: 'Song is already in the queue.' });
     }
@@ -149,6 +149,7 @@ const addToQueue = async (req, res) => {
     res.status(500).json({ msg: 'Server Error' });
   }
 };
+
 
 // Fetch all songs in the queue for a specific user with status 1
 const getQueueSongsForUser = async (req, res) => {
@@ -232,4 +233,29 @@ const updateSongStatus = async (req, res) => {
   }
 };
 
-module.exports = { getSongsByPlaylist, getAllSongsForUser, getAllSongsByUserNoAuth, addToQueue, getQueueSongsForUser, getQueueSongsRequests, updateSongStatus };
+// Delete a song from the queue collection
+const deleteSongFromQueue = async (req, res) => {
+  try {
+    const { songId } = req.params; // Extract songId from URL parameters
+
+    // Validate songId
+    if (!mongoose.Types.ObjectId.isValid(songId)) {
+      return res.status(400).json({ msg: 'Invalid song ID.' });
+    }
+
+    // Remove the song from the Queue collection
+    const result = await Queue.deleteMany({ songId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ msg: 'Song not found in the queue.' });
+    }
+
+    res.json({ msg: 'Song deleted from queue successfully.' });
+  } catch (error) {
+    console.error('Error deleting song from queue:', error.message);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+};
+
+
+module.exports = { getSongsByPlaylist, getAllSongsForUser, deleteSongFromQueue, getAllSongsByUserNoAuth, addToQueue, getQueueSongsForUser, getQueueSongsRequests, updateSongStatus };

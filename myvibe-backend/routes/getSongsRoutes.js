@@ -8,7 +8,8 @@ const {
   addToQueue,
   getQueueSongsForUser,
   getQueueSongsRequests,
-  updateSongStatus // Import the new function
+  updateSongStatus,
+  deleteSongFromQueue // Import the new function
 } = require('../controllers/getSongsController');
 
 // @route   GET /api/playlist-songs/:playlistId
@@ -29,8 +30,7 @@ router.get('/public-user-songs', getAllSongsByUserNoAuth);
 // @route   POST /api/add-to-queue
 // @desc    Add a song to the queue for the logged-in user
 // @access  Private
-router.post('/add-to-queue', addToQueue); // Ensure authentication is applied if needed
-
+router.post('/add-to-queue', addToQueue);
 
 // @route   GET /api/queue-songs
 // @desc    Get all songs in the queue for the logged-in user
@@ -45,6 +45,11 @@ router.get('/queue-songs-requests', auth, getQueueSongsRequests);
 // @route   PUT /api/update-song-status
 // @desc    Update the status of a song from 0 to 1
 // @access  Private
-router.put('/update-song-status', auth, updateSongStatus); // Add auth if required
+router.put('/update-song-status', auth, updateSongStatus);
+
+// @route   DELETE /api/queue/delete/:songId
+// @desc    Delete a song from the queue
+// @access  Private
+router.delete('/queue/delete/:songId', auth, deleteSongFromQueue);
 
 module.exports = router;
