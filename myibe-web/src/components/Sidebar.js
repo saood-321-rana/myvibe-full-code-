@@ -115,6 +115,15 @@ const Sidebar = () => {
                 <ul className="menu_items">
                   <div className="menu_title">Manage Playlists</div>
                   <li className="item">
+                  <Link to="/add-user-song" className="nav_link submenu_item" onClick={handleLinkClick}>
+                    <span className="navlink_icon">
+                      <i className="bx bx-music"></i>
+                    </span>
+                    <span className="navlink">Add song</span>
+                  </Link>
+                </li>
+                  <li className="item">
+                    
                     <Link to="/add-playlist" className="nav_link" onClick={handleLinkClick}>
                       <span className="navlink_icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="svg">
@@ -153,14 +162,7 @@ const Sidebar = () => {
                       <span className="navlink">All Songs</span>
                     </Link>
                   </li>
-                  <li className="item">
-                  <Link to="/add-user-song" className="nav_link submenu_item" onClick={handleLinkClick}>
-                    <span className="navlink_icon">
-                      <i className="bx bx-music"></i>
-                    </span>
-                    <span className="navlink">Suggest song</span>
-                  </Link>
-                </li>
+                  
                 </ul>
                 <ul className="menu_items">
                   <div className="menu_title">Manage queue</div>

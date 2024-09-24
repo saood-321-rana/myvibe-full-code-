@@ -37,6 +37,13 @@
   padding: 15px 110px !important;
   z-index: 1000;
 }
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030; /* Bootstrap's default z-index for fixed elements */
+}
 
 .bnn{
   margin-top: 90px !important;

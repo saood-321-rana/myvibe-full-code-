@@ -90,7 +90,7 @@ const SuggestedMusics = () => {
                                         </audio>
                                     </td>
                                     <td>
-                                        {music.status === 0 ? (
+                                        {/* {music.status === 0 ? (
                                             <Button variant="warning" onClick={() => handleApprove(music._id)}>
                                                 Approve
                                             </Button>
@@ -98,7 +98,7 @@ const SuggestedMusics = () => {
                                             <Button variant="success" disabled>
                                                 Approved
                                             </Button>
-                                        )}
+                                        )} */}
                                         <Button variant="danger" onClick={() => handleDelete(music._id)} className="ms-2">
                                             Delete
                                         </Button>

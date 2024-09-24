@@ -91,7 +91,7 @@ const AddUserSong = () => {
     <div className="admin-dashboard">
       <main className="content">
         <div className="form_container">
-          <h2>Suggest us song</h2>
+          <h2>Add song</h2>
           <form onSubmit={handleSubmit}>
             <div className="form_group">
               <label htmlFor="songName">Song Name:</label>

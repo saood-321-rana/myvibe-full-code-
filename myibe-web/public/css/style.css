@@ -1139,7 +1139,9 @@ figure.snip1113.navy h4 {
   border-radius: 30px;
   text-transform: uppercase;
 }
-
+.manat{
+  margin-top: -98px !important;
+}
 .contact_section .contact_form-container button:hover {
   background-color: red;
 }
@@ -1998,6 +2000,9 @@ footer{
     width: 330px!important;
   }
   
+  .manat{
+    margin-top: -18px !important;
+  }
 
   .carousel-control-prev, .carousel-control-next{
     margin-top: 82px!important;

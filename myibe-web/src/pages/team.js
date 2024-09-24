@@ -39,7 +39,7 @@ const team = () => {
 
                                 </div>
                                 <div className='col-md-6 firm mt-5 fsc'>
-                                    <h3 className='mtm'><AnimatedText>Previous Firms</AnimatedText> </h3>
+                                    <h3 className='mtm manat'><AnimatedText>Previous Firms</AnimatedText> </h3>
                                     <AnimatedText><img src='images/Picture8.png' alt='uy' className='mt-3 mtm' height={35} /></AnimatedText><br />
                                     <AnimatedText><img src='images/Picture9.png' alt='uy' className='mt-3 mtm' height={45} /></AnimatedText>
 
@@ -51,8 +51,8 @@ const team = () => {
                 </div>
                 <div className="row mt-5">
 
-                    <div className="col-md-4 mt-5">
-                        <figure class="snip1113 pic red mt-3">
+                    <div className="col-md-4">
+                        <figure class="snip1113 pic red">
                         <AnimatedText><img src="images/team.png" alt="pr-sample1" /></AnimatedText>
                             <figcaption>
                                 <h3 className='text-dark'><AnimatedText>David</AnimatedText> <br /><span><AnimatedText>Bellaiche</AnimatedText></span><a target='_blank' rel="noreferrer" className='anchor' href='http://linkedin.com/in/david-b-28206419b'><i className='fa fa-linkedin btn-danger btn-sm text-light p-1 ml-3'></i></a></h3>

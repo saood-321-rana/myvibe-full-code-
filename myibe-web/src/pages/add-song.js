@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Select from 'react-select'; // Import react-select
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -35,14 +36,6 @@ const AddSong = () => {
     fetchData();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -75,6 +68,17 @@ const AddSong = () => {
     }
   };
 
+  // Prepare options for react-select
+  const songOptions = songs.map((song) => ({
+    value: song._id,
+    label: song.songName,
+  }));
+
+  const playlistOptions = playlists.map((playlist) => ({
+    value: playlist._id,
+    label: playlist.playlistName,
+  }));
+
   return (
     <div className="admin-dashboard">
       <main className="content">
@@ -85,48 +89,32 @@ const AddSong = () => {
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                   <label htmlFor="songId" className="form-label">Select Song:</label>
-                  <select
+                  <Select
                     id="songId"
                     name="songId"
-                    className="form-select"
-                    value={formData.songId}
-                    onChange={handleChange}
+                    value={songOptions.find(option => option.value === formData.songId)}
+                    onChange={(selectedOption) => setFormData({ ...formData, songId: selectedOption.value })}
+                    options={songOptions}
+                    placeholder="Search for a song..."
+                    isSearchable
                     required
-                  >
-                    <option value="">Select a song</option>
-                    {songs.length > 0 ? (
-                      songs.map((song) => (
-                        <option key={song._id} value={song._id}>
-                          {song.songName}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="">No songs available</option>
-                    )}
-                  </select>
+                  />
                 </div>
+
                 <div className="form-group mb-3">
                   <label htmlFor="playlistId" className="form-label">Select Playlist:</label>
-                  <select
+                  <Select
                     id="playlistId"
                     name="playlistId"
-                    className="form-select"
-                    value={formData.playlistId}
-                    onChange={handleChange}
+                    value={playlistOptions.find(option => option.value === formData.playlistId)}
+                    onChange={(selectedOption) => setFormData({ ...formData, playlistId: selectedOption.value })}
+                    options={playlistOptions}
+                    placeholder="Search for a playlist..."
+                    isSearchable
                     required
-                  >
-                    <option value="">Select a playlist</option>
-                    {playlists.length > 0 ? (
-                      playlists.map((playlist) => (
-                        <option key={playlist._id} value={playlist._id}>
-                          {playlist.playlistName}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="">No playlists available</option>
-                    )}
-                  </select>
+                  />
                 </div>
+
                 <button type="submit">Submit</button>
               </form>
             </div>
