@@ -9,6 +9,9 @@ const {
   getQueueSongsForUser,
   getQueueSongsRequests,
   updateSongStatus,
+  suggestSong,
+  getSuggestSongs,
+  deleteSuggestedSong,
   deleteSongFromQueue // Import the new function
 } = require('../controllers/getSongsController');
 
@@ -51,5 +54,16 @@ router.put('/update-song-status', auth, updateSongStatus);
 // @desc    Delete a song from the queue
 // @access  Private
 router.delete('/queue/delete/:songId', auth, deleteSongFromQueue);
+
+// POST route to suggest a song
+router.post('/suggest/:userId', suggestSong);
+
+// @route   GET /api/playlists
+// @desc    Get all playlists for the logged-in user
+// @access  Private
+router.get('/suggest-songs/:userId', getSuggestSongs);
+
+// Route to delete a song suggestion by ID (DELETE)
+router.delete('/delete-suggest-songs/:id', deleteSuggestedSong);
 
 module.exports = router;

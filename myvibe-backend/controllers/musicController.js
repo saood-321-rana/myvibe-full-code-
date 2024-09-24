@@ -32,18 +32,17 @@ const addMusic = async (req, res) => {
   }
 };
 
-
-// @desc    Get all music uploaded by admin (status: 1)
+// @desc    Get all music uploaded by admin
 // @route   GET api/music/admin
 // @access  Private
 const getAllMusic = async (req, res) => {
   try {
-    // Find all music where the status is 1 (admin-uploaded music)
-    const musics = await Music.find({ status: 1 });
+    // Find all music without any status filter
+    const musics = await Music.find({});
     
     res.json(musics);
   } catch (err) {
-    console.error('Error fetching admin music:', err);
+    console.error('Error fetching music:', err);
     res.status(500).send('Server error');
   }
 };

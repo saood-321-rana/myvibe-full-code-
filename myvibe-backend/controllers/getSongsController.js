@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const PlaylistSong = require('../models/PlaylistSong'); // Adjust path as necessary
 const Music = require('../models/Music'); // Adjust path as necessary
 const Queue = require('../models/Queue'); // Adjust path as necessary
+const SongSuggestion = require('../models/SongSuggestion');
 
 // Fetch songs for a specific playlist
 const getSongsByPlaylist = async (req, res) => {
@@ -162,7 +163,7 @@ const getQueueSongsForUser = async (req, res) => {
     }
 
     // Find all queue entries for the given userId and status 1
-    const queueEntries = await Queue.find({ userId, status: 1 }).populate('songId');
+    const queueEntries = await Queue.find({ userId }).populate('songId');
 
     if (!queueEntries.length) {
       return res.status(404).json({ msg: 'No songs with status 1 found in the queue for this user.' });
@@ -257,5 +258,64 @@ const deleteSongFromQueue = async (req, res) => {
   }
 };
 
+const suggestSong = async (req, res) => {
+  try {
+    const { songName } = req.body;
+    const { userId } = req.params;
 
-module.exports = { getSongsByPlaylist, getAllSongsForUser, deleteSongFromQueue, getAllSongsByUserNoAuth, addToQueue, getQueueSongsForUser, getQueueSongsRequests, updateSongStatus };
+    if (!songName) {
+      return res.status(400).json({ msg: 'Song title is required.' });
+    }
+
+    // Create new suggestion
+    const newSuggestion = new SongSuggestion({
+      songTitle: songName,
+      userId,
+    });
+
+    await newSuggestion.save();
+
+    res.status(201).json({ msg: 'Song suggested successfully!' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// Get All Suggested Songs for Logged-In User
+// Get Suggested Songs for a Specific User
+const getSuggestSongs = async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from the URL params
+    const songSuggestions = await SongSuggestion.find({ userId });
+
+    if (!songSuggestions.length) {
+      return res.status(404).json({ msg: 'No song suggestions found for this user.' });
+    }
+
+    res.json(songSuggestions);
+  } catch (error) {
+    console.error('Error fetching song suggestions for user:', error);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+};
+
+const deleteSuggestedSong = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const song = await SongSuggestion.findById(id);
+    if (!song) {
+      return res.status(404).json({ msg: 'Song not found' });
+    }
+
+    await SongSuggestion.findByIdAndDelete(id);  // Using findByIdAndDelete
+
+    res.json({ msg: 'Song deleted successfully!' });
+  } catch (error) {
+    console.error('Error deleting song:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+module.exports = { getSongsByPlaylist, deleteSuggestedSong, getAllSongsForUser, deleteSongFromQueue, getAllSongsByUserNoAuth, getSuggestSongs, suggestSong,addToQueue, getQueueSongsForUser, getQueueSongsRequests, updateSongStatus };
