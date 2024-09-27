@@ -13,6 +13,10 @@ const timeSlotSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  songCount: { // Add songCount field to track the number of songs
+    type: Number,
+    default: 0
   }
 }, { timestamps: true });
 

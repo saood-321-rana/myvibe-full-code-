@@ -12,6 +12,8 @@ const {
   suggestSong,
   getSuggestSongs,
   deleteSuggestedSong,
+  submitReview,
+  getAllReviews,
   deleteSongFromQueue // Import the new function
 } = require('../controllers/getSongsController');
 
@@ -65,5 +67,13 @@ router.get('/suggest-songs/:userId', getSuggestSongs);
 
 // Route to delete a song suggestion by ID (DELETE)
 router.delete('/delete-suggest-songs/:id', deleteSuggestedSong);
+
+// @route   POST /api/add-to-queue
+// @desc    Add a song to the queue for the logged-in user
+// @access  Private
+router.post('/reviews', submitReview);
+
+// Route to get all reviews
+router.get('/reviews', getAllReviews);
 
 module.exports = router;

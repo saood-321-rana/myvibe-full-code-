@@ -27,23 +27,24 @@ exports.createTimeSlot = async (req, res) => {
   }
 };
 
-// @desc    Get time slots for the currently logged-in user
+// @desc    Get all time slots or filter by user
 // @route   GET /api/timeslots
-// @access  Private
+// @access  Public
 exports.getTimeSlots = async (req, res) => {
-    try {
-      // Get user ID from the request (assuming it's added to req.user in a middleware)
-      const userId = req.user.id;
+  const userId = req.query.userId; // Get the userId from query string
   
-      // Fetch time slots for the specific user
-      const timeSlots = await TimeSlot.find({ userId });
-  
+  try {
+      // If userId is provided, fetch time slots for that user only, otherwise fetch all time slots
+      const query = userId ? { userId: userId } : {};
+      const timeSlots = await TimeSlot.find(query); // Fetch filtered or all time slots
+
       res.json(timeSlots);
-    } catch (error) {
+  } catch (error) {
       console.error('Error fetching time slots:', error.message);
       res.status(500).json({ msg: 'Server error' });
-    }
-  };
+  }
+};
+
   
 // @desc    Update time slot
 // @route   PUT /api/timeslots/:id

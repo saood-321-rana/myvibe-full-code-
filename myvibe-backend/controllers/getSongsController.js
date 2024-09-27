@@ -3,6 +3,8 @@ const PlaylistSong = require('../models/PlaylistSong'); // Adjust path as necess
 const Music = require('../models/Music'); // Adjust path as necessary
 const Queue = require('../models/Queue'); // Adjust path as necessary
 const SongSuggestion = require('../models/SongSuggestion');
+const Review = require('../models/reviewModel');
+const TimeSlot = require('../models/TimeSlot'); // Import the TimeSlot model
 
 // Fetch songs for a specific playlist
 const getSongsByPlaylist = async (req, res) => {
@@ -107,42 +109,64 @@ const getAllSongsByUserNoAuth = async (req, res) => {
 
 const addToQueue = async (req, res) => {
   try {
-    const { songId, userId, status } = req.body; // Receive status from the frontend
+    const { songId, userId, timeSlotId, status } = req.body;
 
-    // Log the incoming request body for debugging
-    console.log('Request body:', req.body);
+    console.log('Adding song to queue with timeSlotId:', timeSlotId);
 
     // Validate songId
     if (!mongoose.Types.ObjectId.isValid(songId)) {
       return res.status(400).json({ msg: 'Invalid song ID.' });
     }
 
-    // Validate userId if provided
-    if (userId && !mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ msg: 'Invalid user ID.' });
+    // Validate timeSlotId
+    if (timeSlotId && !mongoose.Types.ObjectId.isValid(timeSlotId)) {
+      return res.status(400).json({ msg: 'Invalid time slot ID.' });
     }
 
-    // Find the song in the Music collection
-    const song = await Music.findById(songId);
-    if (!song) {
-      return res.status(404).json({ msg: 'Song not found.' });
-    }
-
-    // Check if the song is already in the queue for the same user
-    const existingQueueEntry = await Queue.findOne({ songId: song._id, userId: userId });
+    // Check if the song is already in the queue for the same user and time slot
+    const existingQueueEntry = await Queue.findOne({ songId, userId, timeSlotId: timeSlotId || null });
     if (existingQueueEntry) {
-      return res.status(400).json({ msg: 'Song is already in the queue.' });
+      return res.status(400).json({ msg: 'Song is already in the queue for this time slot.' });
     }
 
-    // Create a new entry in the Queue collection with songId, userId, and status
+    // Create a new queue entry
     const newQueueEntry = new Queue({
-      songId: song._id,
-      userId: userId || null, 
-      status: status // Use the status sent from the frontend
+      songId,
+      userId: userId || null,
+      timeSlotId: timeSlotId || null, // Save time slot ID, allow null
+      status,
     });
 
-    // Save the queue entry
+    // Save queue entry
     await newQueueEntry.save();
+
+    console.log('Queue entry saved:', newQueueEntry);
+
+    // Update the Music model with the timeSlotId
+    const music = await Music.findById(songId);
+    if (!music) {
+      return res.status(404).json({ msg: 'Music not found.' });
+    }
+
+    // Add the timeSlotId to the song in the Music collection if not already set
+    if (timeSlotId && !music.timeSlotId) {
+      music.timeSlotId = timeSlotId;
+      await music.save();
+    }
+
+    console.log('Music document updated with timeSlotId:', music);
+
+    // If a timeSlotId is provided, increment the songCount for the time slot
+    if (timeSlotId) {
+      const timeSlot = await TimeSlot.findById(timeSlotId);
+      if (!timeSlot) {
+        return res.status(404).json({ msg: 'Time slot not found.' });
+      }
+
+      // Increment songCount and save
+      timeSlot.songCount += 1;
+      await timeSlot.save();
+    }
 
     res.status(201).json({ msg: 'Song added to queue successfully.' });
   } catch (error) {
@@ -152,32 +176,60 @@ const addToQueue = async (req, res) => {
 };
 
 
-// Fetch all songs in the queue for a specific user with status 1
+
 const getQueueSongsForUser = async (req, res) => {
   try {
-    const { userId } = req.query; // Extract userId from query parameters
+    const { userId, timeSlotId } = req.query; // Extract userId and timeSlotId from query parameters
 
     // Validate userId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ msg: 'Invalid user ID.' });
     }
 
-    // Find all queue entries for the given userId and status 1
-    const queueEntries = await Queue.find({ userId }).populate('songId');
+    // Validate timeSlotId if provided
+    if (timeSlotId && !mongoose.Types.ObjectId.isValid(timeSlotId)) {
+      return res.status(400).json({ msg: 'Invalid time slot ID.' });
+    }
+
+    // Build the query to fetch queue entries for the user, and optionally filter by time slot
+    const query = { userId };
+
+    if (timeSlotId) {
+      query.timeSlotId = timeSlotId;
+    }
+
+    // Find all queue entries for the given userId and optional timeSlotId, and populate the song details
+    const queueEntries = await Queue.find(query).populate('songId');
 
     if (!queueEntries.length) {
-      return res.status(404).json({ msg: 'No songs with status 1 found in the queue for this user.' });
+      return res.status(404).json({ msg: 'No songs found in the queue for this user.' });
     }
 
     // Extract songs from queue entries
     const songs = queueEntries.map(entry => entry.songId);
 
+    // If timeSlotId is provided, check the song limit for that time slot
+    if (timeSlotId) {
+      const timeSlot = await TimeSlot.findById(timeSlotId);
+      if (!timeSlot) {
+        return res.status(404).json({ msg: 'Time slot not found.' });
+      }
+
+      // Check if the time slot has a song limit
+      if (timeSlot.songLimit && songs.length > timeSlot.songLimit) {
+        return res.status(400).json({ msg: `Song limit exceeded for time slot. Limit: ${timeSlot.songLimit}` });
+      }
+    }
+
+    // Return the songs
     res.json(songs);
   } catch (error) {
     console.error('Error fetching queue songs:', error.message);
     res.status(500).json({ msg: 'Server Error' });
   }
 };
+
+
 
 // Fetch all songs in the queue for a specific user with status 1
 const getQueueSongsRequests = async (req, res) => {
@@ -318,4 +370,31 @@ const deleteSuggestedSong = async (req, res) => {
   }
 };
 
-module.exports = { getSongsByPlaylist, deleteSuggestedSong, getAllSongsForUser, deleteSongFromQueue, getAllSongsByUserNoAuth, getSuggestSongs, suggestSong,addToQueue, getQueueSongsForUser, getQueueSongsRequests, updateSongStatus };
+const submitReview = async (req, res) => {
+  const { rating, email, feedback } = req.body;
+
+  try {
+    const review = new Review({
+      rating,
+      email,
+      feedback
+    });
+
+    await review.save();
+    res.status(200).json({ message: 'Review submitted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to submit review', error: error.message });
+  }
+};
+
+// Get all reviews
+const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find(); // Fetch all reviews
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve reviews', error: error.message });
+  }
+};
+
+module.exports = { getSongsByPlaylist, getAllReviews, submitReview, deleteSuggestedSong, getAllSongsForUser, deleteSongFromQueue, getAllSongsByUserNoAuth, getSuggestSongs, suggestSong,addToQueue, getQueueSongsForUser, getQueueSongsRequests, updateSongStatus };

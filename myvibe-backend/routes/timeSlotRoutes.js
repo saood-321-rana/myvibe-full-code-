@@ -7,7 +7,7 @@ const auth = require('../middleware/auth');
 router.post('/', auth, createTimeSlot);
 
 // Get all time slots
-router.get('/', auth, getTimeSlots);
+router.get('/', getTimeSlots);
 
 // Update a time slot
 router.put('/:id', auth, updateTimeSlot);
