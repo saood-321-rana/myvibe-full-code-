@@ -22,8 +22,8 @@ const Sidebar = () => {
   };
 
   // Determine which sidebar links to show based on the current route
-  const adminRoutes = ['/admin-dashboard', '/add-music', '/all-musics', '/all-users', '/edit-profile', '/suggested-songs'];
-  const clubRoutes = ['/club-dashboard', '/add-playlist', '/add-song', '/all-songs', '/all-playlists', '/edit-user','/playlist-wise-songs', '/add-user-song','/all-songs', '/generate-new', '/end-users', '/add-time-slot', '/all-time-slots', '/user-requests'];
+  const adminRoutes = ['/admin-dashboard', '/reviews','/add-music', '/all-musics', '/all-users', '/edit-profile', '/suggested-songs'];
+  const clubRoutes = ['/club-dashboard', '/revenue', '/add-playlist', '/add-song', '/all-songs', '/all-playlists', '/edit-user','/playlist-wise-songs', '/add-user-song','/all-songs', '/generate-new', '/end-users', '/add-time-slot', '/all-time-slots', '/user-requests'];
   const otherRoutes = ['/r-dashboard'];
   const isAdmin = adminRoutes.some(route => location.pathname.startsWith(route));
   const isClub = clubRoutes.some(route => location.pathname.startsWith(route));
@@ -90,6 +90,17 @@ const Sidebar = () => {
                   </Link>
                 </li>
                 <ul className="menu_items">
+            <div className="menu_title">Reviews</div>
+            <li className="item">
+              <Link to="/reviews" className="nav_link" onClick={handleLinkClick}>
+                <span className="navlink_icon">
+                  <i className="bx bx-comment"></i>
+                </span>
+                <span className="navlink">All Reviews</span>
+              </Link>
+            </li>
+          </ul>
+                <ul className="menu_items">
             <div className="menu_title menu_setting"></div>
             <li className="item">
               <Link to="/edit-profile" className="nav_link" onClick={handleLinkClick}>
@@ -100,6 +111,7 @@ const Sidebar = () => {
               </Link>
             </li>
           </ul>
+         
               </>
             )}
             {isClub && (
@@ -224,6 +236,18 @@ const Sidebar = () => {
                
                
                 <ul className="menu_items">
+            <div className="menu_title">Statistics</div>
+            <li className="item">
+              <Link to="/revenue" className="nav_link" onClick={handleLinkClick}>
+                <span className="navlink_icon">
+                  <i className="bx bx-money"></i>
+                </span>
+                <span className="navlink">Revenue</span>
+              </Link>
+            </li>
+          </ul>
+
+          <ul className="menu_items">
             <div className="menu_title menu_setting"></div>
             <li className="item">
               <Link to="/edit-user" className="nav_link" onClick={handleLinkClick}>

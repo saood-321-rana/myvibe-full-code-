@@ -69,7 +69,8 @@ const Queue = () => {
         if (nextIndex < musics.length) {
           playMusicAtIndex(nextIndex);
         } else {
-          console.log('All songs have been played.');
+          playMusicAtIndex(nextIndex);
+          // console.log('All songs have been played.');
         }
       };
     }

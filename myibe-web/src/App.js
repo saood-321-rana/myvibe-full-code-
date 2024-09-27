@@ -47,6 +47,8 @@ import ResetPassword from './pages/reset-password';
 import UserQueue from './pages/user-queue';
 import SuggestedMusics from './pages/suggested-songs';
 import AddUserSong from './pages/add-user-song';
+import AllReviews from './pages/reviews';
+import Revenue from './pages/revenue';
 
 const MainLayout = () => {
   const location = useLocation();
@@ -55,7 +57,7 @@ const MainLayout = () => {
   const noHeaderFooterRoutes = [
     '/admin-dashboard', '/club-dashboard', '/add-music', '/add-time-slot',
     '/all-musics', '/all-users', '/r-dashboard', '/add-playlist', '/add-song',
-    '/all-playlists', '/playlist-wise-songs', '/generate-new', '/all-songs', 
+    '/all-playlists', '/playlist-wise-songs', '/generate-new', '/all-songs', '/reviews', '/revenue',
     '/all-time-slots', '/edit-profile', '/user-requests', '/edit-user', '/suggested-songs', '/add-user-song' 
     
   ];
@@ -79,6 +81,7 @@ const MainLayout = () => {
       {/* Show Sidebar for certain private routes */}
       {(
         location.pathname === '/admin-dashboard' || 
+        location.pathname === '/reviews' || 
         location.pathname === '/add-music' || 
         location.pathname === '/suggested-songs' || 
         location.pathname === '/all-musics' || 
@@ -87,6 +90,7 @@ const MainLayout = () => {
         location.pathname === '/r-dashboard' || 
         location.pathname === '/add-playlist' || 
         location.pathname === '/add-song' || 
+        location.pathname === '/revenue' || 
         location.pathname === '/all-playlists' || 
         location.pathname === '/playlist-wise-songs' || 
         location.pathname === '/all-songs' || 
@@ -107,6 +111,7 @@ const MainLayout = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/revenue" element={<Revenue />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/suggested-songs" element={<SuggestedMusics />} />
@@ -125,6 +130,7 @@ const MainLayout = () => {
           <Route path="/club-dashboard" element={<ClubDashboard />} />
           <Route path="/r-dashboard" element={<RDashboard />} />
           <Route path="/add-music" element={<AddMusic />} />
+          <Route path="/reviews" element={<AllReviews />} />
           <Route path="/user-requests" element={<UserRequests />} />
           <Route path="/add-time-slot" element={<AddTimeSlot />} />
           <Route path="/add-song" element={<AddSong />} />
